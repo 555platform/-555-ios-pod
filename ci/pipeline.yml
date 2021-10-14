@@ -26,7 +26,7 @@ jobs:
       - task: publish-sdk
         file: podcode/ci/tasks/publish.yml
         input_mapping:
-          code: pod-repo
+          code: podcode
         params:
           KEY_ID: ((ios.key_id))
           ISSUER_ID: ((ios.issuer_id))

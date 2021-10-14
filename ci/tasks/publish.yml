@@ -4,4 +4,4 @@ inputs:
   - name: code
 
 run:
-  path: ci/scripts/publish.sh
+  path: code/ci/scripts/build.sh

@@ -1,0 +1,86 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+
+	private_lane :certificates do 
+
+		app_store_connect_api_key(
+			key_id: ENV['KEY_ID'],
+			issuer_id: ENV['ISSUER_ID'],
+			key_content: ENV['APPLE_PRIVATE_KEY'],
+			in_house: false
+			)
+		ENV['MATCH_GIT_BASIC_AUTHORIZATION'] = ENV['GIT_BASE64_KEY']
+                ENV['MATCH_PASSWORD'] = ENV['GIT_TOKEN']
+		match
+
+	end
+
+
+	desc "Build"
+	lane :build do |values|
+	
+	    certificates
+	    gym(scheme: values[:schemeName], silent: true, clean: true)
+	end
+
+
+
+  	desc "Build framework"
+	lane :build_framework do |lane|
+
+   	 	if !lane[:framework]
+      			raise "No framework specified!".red
+    		end
+
+    		framework = lane[:framework]
+
+    		scheme = "#{framework}Universal"
+
+		version = get_version_number(xcodeproj: "Rtc555Sdk.xcodeproj",
+  target: "Rtc555Sdk")
+
+       
+                puts "version number :: "
+		puts version
+
+		increment_version_number(
+  			version_number: "1.1.19",        
+  			xcodeproj: "./Rtc555Sdk.xcodeproj" 
+		)
+
+		xcodebuild(
+      			scheme: scheme,
+    		)
+
+		github_release = set_github_release(
+  			repository_name: "555platform/555-ios-pod",
+  			api_token: ENV["GIT_PUBLIC_TOKEN"],
+  			name: "New Release",
+  			tag_name: "v1.1.20-Beta3",
+  			description: "Test Release",
+			commitish: "main",
+  			upload_assets: ["./Deps-xc/Rtc555Sdk.zip"]
+		)
+
+		
+  	end
+
+end
+

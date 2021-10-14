@@ -1,0 +1,13 @@
+git_url("https://github.comcast.com/555-platform/555SDK-Certs.git")
+
+storage_mode("git")
+
+type("development") # The default type, can be: appstore, adhoc, enterprise or development
+app_identifier("")
+keychain_password("") 
+
+
+#app_identifier(["com.comcast.Rtc555Sdk"])
+#username("harish.28gupta@gmail.com")
+#clone_branch_directly true
+#force_for_new_devices true

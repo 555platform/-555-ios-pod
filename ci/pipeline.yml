@@ -1,0 +1,47 @@
+resource_types:
+
+  - name: slack-alert
+    type: docker-image
+    source:
+      repository: arbourd/concourse-slack-alert-resource
+      
+resources:
+      
+  - name: podcode
+    type: git
+    webhook_token: ((555-dev-ci.webhook-token))
+    icon: github-circle
+    source:
+      uri: https://github.com/555platform/555-ios-pod
+      username: ((ios.username))
+      password: ((ios.password))
+      branch: main
+    
+jobs:
+  - name: build-and-test
+    serial: true
+    plan:
+      - get: podcode
+        trigger: true
+      - task: publish-sdk
+        file: podcode/ci/tasks/publish.yml
+        input_mapping:
+          code: pod-repo
+        params:
+          KEY_ID: ((ios.key_id))
+          ISSUER_ID: ((ios.issuer_id))
+          APPLE_PRIVATE_KEY: ((ios.api_key))
+          GIT_BASE64_KEY: ((ios.git_base64_key))
+          CERTIFICATE_KEY: ((ios.cert_key))
+          GIT_TOKEN: ((ios.git_token))
+          GIT_PUBLIC_TOKEN: ((ios.git_api_token))
+      
+          
+
+
+           
+          
+
+
+
+     

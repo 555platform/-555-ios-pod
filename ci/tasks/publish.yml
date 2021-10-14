@@ -1,0 +1,7 @@
+platform: darwin
+
+inputs:
+  - name: code
+
+run:
+  path: code/ci/scripts/publish.sh
